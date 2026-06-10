@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM Prospection ICPE — ETI AURA</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1f2937;
+    --border: #2a3441;
+    --accent: #22d3ee;
+    --accent2: #f59e0b;
+    --accent3: #10b981;
+    --danger: #ef4444;
+    --warn: #f97316;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --text3: #6b7280;
+    --novo: #22d3ee;
+    --contact: #f59e0b;
+    --rdv: #a78bfa;
+    --devis: #fb923c;
+    --gagne: #10b981;
+    --perdu: #ef4444;
+    --froid: #6b7280;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 28px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--accent); }
+
+  .header-stats {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .stat-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+  }
+  .stat-pill .val {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--accent);
+  }
+  .stat-pill .lbl {
+    font-size: 9px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  /* LAYOUT */
+  .app {
+    display: flex;
+    height: calc(100vh - 61px);
+  }
+
+  /* SIDEBAR */
+  aside {
+    width: 220px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .sidebar-section {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text3);
+    margin-bottom: 10px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+  }
+
+  .filter-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--text2);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+  .filter-btn:hover { background: var(--surface2); color: var(--text); }
+  .filter-btn.active { background: rgba(34,211,238,0.1); color: var(--accent); border-left: 2px solid var(--accent); }
+
+  .filter-btn .count {
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 1px 7px;
+    font-size: 10px;
+    color: var(--text3);
+  }
+  .filter-btn.active .count { background: rgba(34,211,238,0.2); color: var(--accent); }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 7px;
+  }
+
+  /* MAIN */
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* TOOLBAR */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    flex-wrap: wrap;
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0 12px;
+    flex: 1;
+    max-width: 320px;
+  }
+  .search-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 9px 8px;
+    width: 100%;
+  }
+  .search-box input::placeholder { color: var(--text3); }
+  .search-icon { color: var(--text3); font-size: 14px; }
+
+  select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    color: var(--text2);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .btn {
+    padding: 9px 16px;
+    border-radius: 8px;
+    border: none;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+  }
+  .btn-primary:hover { background: #67e8f9; }
+  .btn-ghost {
+    background: var(--surface2);
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { color: var(--text); border-color: var(--text3); }
+  .btn-sm { padding: 5px 10px; font-size: 11px; }
+
+  /* VIEW TOGGLE */
+  .view-toggle { display: flex; gap: 4px; }
+  .view-btn {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text3);
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.15s;
+  }
+  .view-btn.active { background: var(--surface2); color: var(--accent); border-color: var(--accent); }
+
+  /* TABLE VIEW */
+  .table-container {
+    flex: 1;
+    overflow: auto;
+    padding: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  th {
+    background: var(--surface);
+    color: var(--text3);
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  th:hover { color: var(--text2); }
+  th.sorted { color: var(--accent); }
+
+  tr.data-row {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+    cursor: pointer;
+  }
+  tr.data-row:hover { background: rgba(255,255,255,0.02); }
+
+  td {
+    padding: 11px 14px;
+    color: var(--text2);
+    vertical-align: middle;
+  }
+
+  td.company-name {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* STATUS BADGE */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .badge-nouveau { background: rgba(34,211,238,0.12); color: var(--novo); }
+  .badge-contact { background: rgba(245,158,11,0.12); color: var(--contact); }
+  .badge-rdv { background: rgba(167,139,250,0.12); color: var(--rdv); }
+  .badge-devis { background: rgba(251,146,60,0.12); color: var(--devis); }
+  .badge-gagne { background: rgba(16,185,129,0.12); color: var(--gagne); }
+  .badge-perdu { background: rgba(239,68,68,0.12); color: var(--danger); }
+  .badge-froid { background: rgba(107,114,128,0.12); color: var(--froid); }
+
+  /* SECTEUR */
+  .secteur-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    background: var(--surface2);
+    color: var(--text3);
+    border: 1px solid var(--border);
+  }
+
+  /* PRIORITY */
+  .priority {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+  }
+  .priority-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .p1 .priority-dot { background: var(--danger); }
+  .p2 .priority-dot { background: var(--warn); }
+  .p3 .priority-dot { background: var(--accent3); }
+
+  /* KANBAN VIEW */
+  .kanban-board {
+    display: flex;
+    gap: 12px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    flex: 1;
+    align-items: flex-start;
+  }
+
+  .kanban-col {
+    min-width: 240px;
+    max-width: 240px;
+    flex-shrink: 0;
+  }
+
+  .kanban-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: 8px 8px 0 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    background: var(--surface);
+    margin-bottom: 0;
+  }
+  .kanban-header .col-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .kanban-header .col-count {
+    font-size: 11px;
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 1px 8px;
+    color: var(--text3);
+  }
+
+  .kanban-cards {
+    background: rgba(255,255,255,0.01);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    min-height: 200px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    max-height: calc(100vh - 220px);
+    overflow-y: auto;
+  }
+
+  .kanban-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .kanban-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+
+  .kc-company {
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--text);
+    margin-bottom: 5px;
+  }
+  .kc-meta {
+    font-size: 10px;
+    color: var(--text3);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .kc-action {
+    font-size: 10px;
+    color: var(--accent2);
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    width: 680px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 28px;
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text2);
+    font-size: 16px;
+  }
+  .modal-close:hover { color: var(--text); background: var(--bg); }
+
+  .modal-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  .modal-subtitle {
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 20px;
+  }
+
+  .modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .field-group.full { grid-column: 1 / -1; }
+
+  .field-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text3);
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+  }
+
+  .field-val {
+    font-size: 13px;
+    color: var(--text);
+    padding: 8px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  input[type="text"], input[type="email"], input[type="date"], textarea, select.modal-select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.15s;
+  }
+  input:focus, textarea:focus, select.modal-select:focus { border-color: var(--accent); }
+  textarea { resize: vertical; min-height: 70px; }
+
+  .notes-section {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    margin-top: 4px;
+  }
+
+  .notes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .note-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .note-meta { font-size: 10px; color: var(--text3); margin-bottom: 4px; }
+  .note-text { font-size: 12px; color: var(--text2); }
+
+  .add-note-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  .add-note-row textarea { flex: 1; min-height: 52px; }
+
+  /* PIPELINE BAR */
+  .pipeline-mini {
+    display: flex;
+    gap: 6px;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    align-items: center;
+    font-size: 11px;
+    overflow-x: auto;
+  }
+  .pipe-seg {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    color: var(--text3);
+  }
+  .pipe-bar {
+    height: 5px;
+    border-radius: 3px;
+    min-width: 20px;
+  }
+  .pipe-sep { color: var(--border); margin: 0 4px; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+  .hidden { display: none !important; }
+  .ml-auto { margin-left: auto; }
+
+  .pipeline-progress {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 16px;
+    overflow: hidden;
+  }
+  .pipeline-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  .tag-icpe {
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid;
+    display: inline-block;
+  }
+  .tag-icpe-a { border-color: var(--danger); color: var(--danger); }
+  .tag-icpe-e { border-color: var(--contact); color: var(--contact); }
+  .tag-icpe-d { border-color: var(--accent3); color: var(--accent3); }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    color: var(--text3);
+    gap: 10px;
+  }
+  .empty-state .icon { font-size: 48px; opacity: 0.3; }
+  .empty-state p { font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">BE<span>.</span>ICPE <span style="color:var(--text3);font-weight:400;font-size:14px">— CRM Prospection</span></div>
+  <div class="header-stats" id="headerStats"></div>
+  <div class="header-actions">
+    <button class="btn btn-ghost btn-sm" onclick="exportCSV()">↓ Export CSV</button>
+    <button class="btn btn-primary btn-sm" onclick="openAddModal()">+ Prospect</button>
+  </div>
+</header>
+
+<div class="pipeline-mini" id="pipelineMini"></div>
+
+<div class="app">
+  <aside>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Statut pipeline</div>
+      <button class="filter-btn active" onclick="filterStatus(null, this)">
+        Tous <span class="count" id="cnt-all">0</span>
+      </button>
+      <button class="filter-btn" onclick="filterStatus('Nouveau', this)">
+        <span><span class="status-dot" style="background:var(--novo)"></span>Nouveau</span>
+        <span class="count" id="cnt-Nouveau">0</span>
+      </button>
+      <button class="filter-btn" onclick="filterStatus('Contacté', this)">
+        <span><span class="status-dot" style="background:var(--contact)"></span>Contacté</span>
+        <span class="count" id="cnt-Contacté">0</span>
+      </button>
+      <button class="filter-btn" onclick="filterStatus('RDV planifié', this)">
+        <span><span class="status-dot" style="background:var(--rdv)"></span>RDV planifié</span>
+        <span class="count" id="cnt-RDV planifié">0</span>
+      </button>
+      <button class="filter-btn" onclick="filterStatus('Devis envoyé', this)">
+        <span><span class="status-dot" style="background:var(--devis)"></span>Devis envoyé</span>
+        <span class="count" id="cnt-Devis envoyé">0</span>
+      </button>
+      <button class="filter-btn" onclick="filterStatus('Gagné', this)">
+        <span><span class="status-dot" style="background:var(--gagne)"></span>Gagné</span>
+        <span class="count" id="cnt-Gagné">0</span>
+      </button>
+      <button class="filter-btn" onclick="filterStatus('Perdu', this)">
+        <span><span class="status-dot" style="background:var(--danger)"></span>Perdu</span>
+        <span class="count" id="cnt-Perdu">0</span>
+      </button>
+      <button class="filter-btn" onclick="filterStatus('Froid', this)">
+        <span><span class="status-dot" style="background:var(--froid)"></span>Froid</span>
+        <span class="count" id="cnt-Froid">0</span>
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Filière</div>
+      <button class="filter-btn" onclick="filterSecteur(null, this)">Toutes <span class="count" id="scnt-all">0</span></button>
+      <button class="filter-btn" onclick="filterSecteur('Agroalimentaire', this)">🌾 Agroalimentaire <span class="count" id="scnt-Agroalimentaire">0</span></button>
+      <button class="filter-btn" onclick="filterSecteur('Métallurgie', this)">⚙️ Métallurgie <span class="count" id="scnt-Métallurgie">0</span></button>
+      <button class="filter-btn" onclick="filterSecteur('Plasturgie', this)">🔷 Plasturgie <span class="count" id="scnt-Plasturgie">0</span></button>
+      <button class="filter-btn" onclick="filterSecteur('Traitement de surface', this)">🧪 Trait. surface <span class="count" id="scnt-Traitement de surface">0</span></button>
+      <button class="filter-btn" onclick="filterSecteur('Chimie', this)">⚗️ Chimie <span class="count" id="scnt-Chimie">0</span></button>
+      <button class="filter-btn" onclick="filterSecteur('Energie', this)">⚡ Énergie <span class="count" id="scnt-Energie">0</span></button>
+      <button class="filter-btn" onclick="filterSecteur('Logistique', this)">📦 Logistique <span class="count" id="scnt-Logistique">0</span></button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Priorité</div>
+      <button class="filter-btn" onclick="filterPriority(null, this)">Toutes</button>
+      <button class="filter-btn" onclick="filterPriority('P1', this)"><span style="color:var(--danger)">● P1</span> — Haute</button>
+      <button class="filter-btn" onclick="filterPriority('P2', this)"><span style="color:var(--warn)">● P2</span> — Moyenne</button>
+      <button class="filter-btn" onclick="filterPriority('P3', this)"><span style="color:var(--accent3)">● P3</span> — Basse</button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="toolbar">
+      <div class="search-box">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="searchInput" placeholder="Rechercher entreprise, contact, ville..." oninput="applyFilters()">
+      </div>
+      <select onchange="applySortFilter(this.value)">
+        <option value="">Trier par...</option>
+        <option value="company">Entreprise A→Z</option>
+        <option value="status">Statut</option>
+        <option value="priority">Priorité</option>
+        <option value="secteur">Filière</option>
+        <option value="ca">CA estimé ↓</option>
+        <option value="lastContact">Dernier contact</option>
+      </select>
+      <div class="view-toggle">
+        <button class="view-btn active" id="btnTable" onclick="setView('table')" title="Vue tableau">☰</button>
+        <button class="view-btn" id="btnKanban" onclick="setView('kanban')" title="Vue Kanban">⊞</button>
+      </div>
+      <span id="resultCount" style="font-size:11px;color:var(--text3);margin-left:4px;white-space:nowrap"></span>
+    </div>
+
+    <!-- TABLE VIEW -->
+    <div class="table-container" id="tableView">
+      <table>
+        <thead>
+          <tr>
+            <th onclick="sortBy('company')">Entreprise</th>
+            <th onclick="sortBy('ville')">Ville</th>
+            <th onclick="sortBy('secteur')">Filière</th>
+            <th onclick="sortBy('status')">Statut</th>
+            <th onclick="sortBy('priority')">Priorité</th>
+            <th>ICPE</th>
+            <th onclick="sortBy('contact')">Contact</th>
+            <th onclick="sortBy('ca')">CA est.</th>
+            <th onclick="sortBy('nextAction')">Prochaine action</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div class="empty-state hidden" id="emptyState">
+        <div class="icon">🔍</div>
+        <p>Aucun prospect correspondant à ces filtres</p>
+      </div>
+    </div>
+
+    <!-- KANBAN VIEW -->
+    <div class="kanban-board hidden" id="kanbanView"></div>
+  </main>
+</div>
+
+<!-- MODAL DETAIL / EDIT -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<!-- MODAL ADD -->
+<div class="modal-overlay" id="addModalOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAddModal()">✕</button>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:18px">+ Nouveau Prospect</div>
+    <div class="modal-grid">
+      <div class="field-group"><div class="field-label">Entreprise *</div><input type="text" id="nCompany" placeholder="Nom entreprise"></div>
+      <div class="field-group"><div class="field-label">Ville *</div><input type="text" id="nVille" placeholder="Lyon, Grenoble..."></div>
+      <div class="field-group"><div class="field-label">Filière *</div>
+        <select class="modal-select" id="nSecteur">
+          <option>Agroalimentaire</option><option>Métallurgie</option><option>Plasturgie</option>
+          <option>Traitement de surface</option><option>Chimie</option><option>Energie</option><option>Logistique</option><option>Autre</option>
+        </select>
+      </div>
+      <div class="field-group"><div class="field-label">Régime ICPE</div>
+        <select class="modal-select" id="nIcpe"><option>A</option><option>E</option><option>D</option><option>Seveso SB</option><option>Seveso SH</option></select>
+      </div>
+      <div class="field-group"><div class="field-label">Contact</div><input type="text" id="nContact" placeholder="Prénom Nom"></div>
+      <div class="field-group"><div class="field-label">Fonction</div><input type="text" id="nFonction" placeholder="Directeur HSE..."></div>
+      <div class="field-group"><div class="field-label">Email</div><input type="email" id="nEmail" placeholder="email@société.fr"></div>
+      <div class="field-group"><div class="field-label">Téléphone</div><input type="text" id="nTel" placeholder="06..."></div>
+      <div class="field-group"><div class="field-label">Statut</div>
+        <select class="modal-select" id="nStatus">
+          <option>Nouveau</option><option>Contacté</option><option>RDV planifié</option><option>Devis envoyé</option><option>Gagné</option><option>Perdu</option><option>Froid</option>
+        </select>
+      </div>
+      <div class="field-group"><div class="field-label">Priorité</div>
+        <select class="modal-select" id="nPriority"><option>P1</option><option>P2</option><option>P3</option></select>
+      </div>
+      <div class="field-group"><div class="field-label">CA estimé (k€)</div><input type="text" id="nCa" placeholder="15"></div>
+      <div class="field-group"><div class="field-label">Besoin principal</div>
+        <select class="modal-select" id="nBesoin">
+          <option>Audit conformité ICPE</option><option>Réexamen IED</option><option>DAE complet</option><option>EDD Seveso</option><option>ATEX</option><option>GEREP/BEGES/OPERAT</option><option>AMO récurrente</option>
+        </select>
+      </div>
+      <div class="field-group full"><div class="field-label">Prochaine action</div><input type="text" id="nNextAction" placeholder="Envoyer email de présentation..."></div>
+      <div class="field-group full"><div class="field-label">Note initiale</div><textarea id="nNote" placeholder="Contexte, infos clés..."></textarea></div>
+    </div>
+    <button class="btn btn-primary" onclick="saveNewProspect()">Créer le prospect</button>
+  </div>
+</div>
+
+<script>
+// ===================== DATA =====================
+let prospects = [
+  { id:1, company:"Savencia Fromage & Dairy", ville:"Bourg-en-Bresse", secteur:"Agroalimentaire", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P1", ca:25, besoin:"GEREP/BEGES/OPERAT", nextAction:"", notes:[], lastContact:"" },
+  { id:2, company:"Lactalis Grenoble", ville:"Grenoble", secteur:"Agroalimentaire", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P1", ca:20, besoin:"GEREP/BEGES/OPERAT", nextAction:"", notes:[], lastContact:"" },
+  { id:3, company:"Andros (usine AURA)", ville:"Valence", secteur:"Agroalimentaire", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:15, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:4, company:"MBK Industrie (Yamaha)", ville:"Roanne", secteur:"Métallurgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P1", ca:30, besoin:"Réexamen IED", nextAction:"", notes:[], lastContact:"" },
+  { id:5, company:"Framatome (composants)", ville:"Saint-Marcel", secteur:"Métallurgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:40, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:6, company:"SNF Floerger", ville:"Saint-Étienne", secteur:"Chimie", icpe:"Seveso SB", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P1", ca:35, besoin:"EDD Seveso", nextAction:"", notes:[], lastContact:"" },
+  { id:7, company:"Solvay (site AURA)", ville:"Valence", secteur:"Chimie", icpe:"Seveso SB", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:30, besoin:"Réexamen IED", nextAction:"", notes:[], lastContact:"" },
+  { id:8, company:"Arkema (Jarrie)", ville:"Grenoble", secteur:"Chimie", icpe:"Seveso SB", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:45, besoin:"Réexamen IED", nextAction:"", notes:[], lastContact:"" },
+  { id:9, company:"Michelin (site Clermont)", ville:"Clermont-Ferrand", secteur:"Plasturgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:20, besoin:"ATEX", nextAction:"", notes:[], lastContact:"" },
+  { id:10, company:"Salomon (Amer Sports)", ville:"Annecy", secteur:"Plasturgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P1", ca:18, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:11, company:"Mécaprotec Industries", ville:"Vaulx-en-Velin", secteur:"Traitement de surface", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P1", ca:22, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:12, company:"Galva Chassieu", ville:"Chassieu", secteur:"Traitement de surface", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:12, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:13, company:"Électro Nickel", ville:"Saint-Étienne", secteur:"Traitement de surface", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P1", ca:14, besoin:"ATEX", nextAction:"", notes:[], lastContact:"" },
+  { id:14, company:"Lisi Aerospace (Charlieu)", ville:"Charlieu", secteur:"Métallurgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P1", ca:28, besoin:"Réexamen IED", nextAction:"", notes:[], lastContact:"" },
+  { id:15, company:"Fareva (pharma/cosméto)", ville:"Pont-de-l'Ain", secteur:"Chimie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P1", ca:20, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:16, company:"ISORG (STMicroelectronics)", ville:"Grenoble", secteur:"Chimie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:18, besoin:"ATEX", nextAction:"", notes:[], lastContact:"" },
+  { id:17, company:"Mantion (quincaillerie)", ville:"Valentigney", secteur:"Métallurgie", icpe:"E", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P3", ca:10, besoin:"GEREP/BEGES/OPERAT", nextAction:"", notes:[], lastContact:"" },
+  { id:18, company:"Somfy (stores/volets)", ville:"Cluses", secteur:"Plasturgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:16, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:19, company:"Mérieux NutriSciences", ville:"Lyon", secteur:"Agroalimentaire", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:18, besoin:"GEREP/BEGES/OPERAT", nextAction:"", notes:[], lastContact:"" },
+  { id:20, company:"Delphi Technologies (BorgWarner)", ville:"Blyes", secteur:"Métallurgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P1", ca:22, besoin:"Réexamen IED", nextAction:"", notes:[], lastContact:"" },
+  { id:21, company:"Mead Johnson (Reckitt)", ville:"Issoire", secteur:"Agroalimentaire", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:14, besoin:"GEREP/BEGES/OPERAT", nextAction:"", notes:[], lastContact:"" },
+  { id:22, company:"Aldes (ventilation)", ville:"Lyon", secteur:"Plasturgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:12, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:23, company:"Isoroy (panneaux bois)", ville:"Ussel", secteur:"Agroalimentaire", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P3", ca:10, besoin:"GEREP/BEGES/OPERAT", nextAction:"", notes:[], lastContact:"" },
+  { id:24, company:"Boiron (homéopathie)", ville:"Messimy", secteur:"Chimie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:16, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:25, company:"Unigrains / Comptoirs Agricoles", ville:"Bourg-en-Bresse", secteur:"Agroalimentaire", icpe:"E", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P3", ca:8, besoin:"GEREP/BEGES/OPERAT", nextAction:"", notes:[], lastContact:"" },
+  { id:26, company:"Nexans (câbles)", ville:"Lyon", secteur:"Métallurgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P1", ca:35, besoin:"Réexamen IED", nextAction:"", notes:[], lastContact:"" },
+  { id:27, company:"Radiall (connecteurs RF)", ville:"Voiron", secteur:"Métallurgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:14, besoin:"ATEX", nextAction:"", notes:[], lastContact:"" },
+  { id:28, company:"Thermador Groupe", ville:"Saint-Quentin-Fallavier", secteur:"Plasturgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:12, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:29, company:"ISOVER Saint-Gobain", ville:"Chambéry", secteur:"Chimie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:18, besoin:"Réexamen IED", nextAction:"", notes:[], lastContact:"" },
+  { id:30, company:"Téfal (Groupe SEB)", ville:"Rumilly", secteur:"Métallurgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P1", ca:20, besoin:"ATEX", nextAction:"", notes:[], lastContact:"" },
+  { id:31, company:"Rossignol Group", ville:"Voiron", secteur:"Plasturgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:14, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:32, company:"Coutier Groupe (INDR)", ville:"Oyonnax", secteur:"Plasturgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P1", ca:25, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:33, company:"Plastivaloire", ville:"site AURA", secteur:"Plasturgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:16, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:34, company:"Oberthur Technologies (IDEMIA)", ville:"Lyon", secteur:"Chimie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:15, besoin:"GEREP/BEGES/OPERAT", nextAction:"", notes:[], lastContact:"" },
+  { id:35, company:"Bostik (TotalEnergies)", ville:"Venette", secteur:"Chimie", icpe:"Seveso SB", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:30, besoin:"EDD Seveso", nextAction:"", notes:[], lastContact:"" },
+  { id:36, company:"Pierre Fabre (cosméto)", ville:"Grenoble", secteur:"Chimie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P1", ca:22, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:37, company:"LISI Medical (implants)", ville:"site AURA", secteur:"Métallurgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:14, besoin:"ATEX", nextAction:"", notes:[], lastContact:"" },
+  { id:38, company:"Acial (traitement eau)", ville:"Lyon", secteur:"Chimie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P3", ca:10, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:39, company:"Millet Innovation (froid médical)", ville:"Péronnas", secteur:"Agroalimentaire", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P3", ca:10, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:40, company:"Delta Plus Group (EPI)", ville:"Lyon", secteur:"Plasturgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:12, besoin:"GEREP/BEGES/OPERAT", nextAction:"", notes:[], lastContact:"" },
+  { id:41, company:"Kiloutou (logistique)", ville:"Villefontaine", secteur:"Logistique", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:15, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:42, company:"ID Logistics (entrepôts)", ville:"Genay", secteur:"Logistique", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:18, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:43, company:"FM Logistic", ville:"Pusignan", secteur:"Logistique", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:16, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:44, company:"SEB Groupe (Moulinex)", ville:"Rumilly", secteur:"Plasturgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P1", ca:22, besoin:"ATEX", nextAction:"", notes:[], lastContact:"" },
+  { id:45, company:"Corning (fibre optique)", ville:"Crolles", secteur:"Chimie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:20, besoin:"Réexamen IED", nextAction:"", notes:[], lastContact:"" },
+  { id:46, company:"Stäubli International (robotique)", ville:"Faverges", secteur:"Métallurgie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P1", ca:18, besoin:"ATEX", nextAction:"", notes:[], lastContact:"" },
+  { id:47, company:"Mécatherm (fours industriels)", ville:"site AURA", secteur:"Agroalimentaire", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P3", ca:10, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:48, company:"Lynred (détecteurs infrarouges)", ville:"Grenoble", secteur:"Chimie", icpe:"A", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:15, besoin:"Audit conformité ICPE", nextAction:"", notes:[], lastContact:"" },
+  { id:49, company:"EPC Groupe (explosifs, chimie)", ville:"site AURA", secteur:"Chimie", icpe:"Seveso SB", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P2", ca:28, besoin:"EDD Seveso", nextAction:"", notes:[], lastContact:"" },
+  { id:50, company:"Photon Lines (optique)", ville:"Lyon", secteur:"Chimie", icpe:"E", contact:"", fonction:"", email:"", tel:"", status:"Nouveau", priority:"P3", ca:8, besoin:"GEREP/BEGES/OPERAT", nextAction:"", notes:[], lastContact:"" }
+];
+
+let currentFilters = { status: null, secteur: null, priority: null, search: "", sort: "" };
+let currentView = "table";
+let editingId = null;
+
+// ===================== INIT =====================
+function init() {
+  updateCounters();
+  updateHeaderStats();
+  updatePipelineMini();
+  applyFilters();
+}
+
+function updateCounters() {
+  const statuses = ['Nouveau','Contacté','RDV planifié','Devis envoyé','Gagné','Perdu','Froid'];
+  document.getElementById('cnt-all').textContent = prospects.length;
+  statuses.forEach(s => {
+    const el = document.getElementById('cnt-' + s);
+    if (el) el.textContent = prospects.filter(p => p.status === s).length;
+  });
+  const secteurs = ['Agroalimentaire','Métallurgie','Plasturgie','Traitement de surface','Chimie','Energie','Logistique'];
+  document.getElementById('scnt-all').textContent = prospects.length;
+  secteurs.forEach(s => {
+    const el = document.getElementById('scnt-' + s);
+    if (el) el.textContent = prospects.filter(p => p.secteur === s).length;
+  });
+}
+
+function updateHeaderStats() {
+  const total = prospects.length;
+  const actifs = prospects.filter(p => !['Froid','Perdu'].includes(p.status)).length;
+  const gagnes = prospects.filter(p => p.status === 'Gagné').length;
+  const caTotal = prospects.reduce((a, p) => a + (p.ca || 0), 0);
+  const caGagne = prospects.filter(p => p.status === 'Gagné').reduce((a, p) => a + (p.ca || 0), 0);
+  document.getElementById('headerStats').innerHTML = `
+    <div class="stat-pill"><div class="val">${total}</div><div class="lbl">Prospects</div></div>
+    <div class="stat-pill"><div class="val" style="color:var(--accent2)">${actifs}</div><div class="lbl">Actifs</div></div>
+    <div class="stat-pill"><div class="val" style="color:var(--accent3)">${gagnes}</div><div class="lbl">Gagnés</div></div>
+    <div class="stat-pill"><div class="val" style="color:var(--text2)">${caTotal} k€</div><div class="lbl">Pipeline total</div></div>
+  `;
+}
+
+function updatePipelineMini() {
+  const stages = [
+    {s:'Nouveau', c:'var(--novo)', label:'Nouveaux'},
+    {s:'Contacté', c:'var(--contact)', label:'Contactés'},
+    {s:'RDV planifié', c:'var(--rdv)', label:'RDV'},
+    {s:'Devis envoyé', c:'var(--devis)', label:'Devis'},
+    {s:'Gagné', c:'var(--gagne)', label:'Gagnés'},
+    {s:'Perdu', c:'var(--danger)', label:'Perdus'},
+    {s:'Froid', c:'var(--froid)', label:'Froids'},
+  ];
+  const total = prospects.length;
+  document.getElementById('pipelineMini').innerHTML = stages.map(({s,c,label}) => {
+    const cnt = prospects.filter(p => p.status === s).length;
+    const ca = prospects.filter(p => p.status === s).reduce((a, p) => a + (p.ca || 0), 0);
+    const w = Math.max(20, (cnt / total) * 120);
+    return `<div class="pipe-seg">
+      <div class="pipe-bar" style="background:${c};width:${w}px;opacity:0.8"></div>
+      <span style="color:${c};font-family:'Syne',sans-serif;font-weight:600;font-size:11px">${cnt}</span>
+      <span>${label}</span>
+      <span style="color:var(--accent3);font-size:10px">${ca}k€</span>
+    </div><span class="pipe-sep">|</span>`;
+  }).join('');
+}
+
+// ===================== FILTERS =====================
+function filterStatus(status, btn) {
+  currentFilters.status = status;
+  document.querySelectorAll('.sidebar-section:first-child .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function filterSecteur(secteur, btn) {
+  currentFilters.secteur = secteur;
+  document.querySelectorAll('.sidebar-section:nth-child(2) .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function filterPriority(priority, btn) {
+  currentFilters.priority = priority;
+  document.querySelectorAll('.sidebar-section:nth-child(3) .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function applySortFilter(val) { currentFilters.sort = val; applyFilters(); }
+
+function applyFilters() {
+  currentFilters.search = document.getElementById('searchInput').value.toLowerCase();
+  let filtered = [...prospects];
+  if (currentFilters.status) filtered = filtered.filter(p => p.status === currentFilters.status);
+  if (currentFilters.secteur) filtered = filtered.filter(p => p.secteur === currentFilters.secteur);
+  if (currentFilters.priority) filtered = filtered.filter(p => p.priority === currentFilters.priority);
+  if (currentFilters.search) {
+    filtered = filtered.filter(p =>
+      p.company.toLowerCase().includes(currentFilters.search) ||
+      (p.contact && p.contact.toLowerCase().includes(currentFilters.search)) ||
+      p.ville.toLowerCase().includes(currentFilters.search) ||
+      p.secteur.toLowerCase().includes(currentFilters.search)
+    );
+  }
+  if (currentFilters.sort === 'company') filtered.sort((a,b) => a.company.localeCompare(b.company));
+  else if (currentFilters.sort === 'status') filtered.sort((a,b) => statusOrder(a.status) - statusOrder(b.status));
+  else if (currentFilters.sort === 'priority') filtered.sort((a,b) => a.priority.localeCompare(b.priority));
+  else if (currentFilters.sort === 'secteur') filtered.sort((a,b) => a.secteur.localeCompare(b.secteur));
+  else if (currentFilters.sort === 'ca') filtered.sort((a,b) => (b.ca||0) - (a.ca||0));
+  else if (currentFilters.sort === 'lastContact') filtered.sort((a,b) => (b.lastContact||'').localeCompare(a.lastContact||''));
+
+  document.getElementById('resultCount').textContent = `${filtered.length} prospect${filtered.length > 1 ? 's' : ''}`;
+  if (currentView === 'table') renderTable(filtered);
+  else renderKanban(filtered);
+}
+
+function statusOrder(s) {
+  const o = {'Nouveau':0,'Contacté':1,'RDV planifié':2,'Devis envoyé':3,'Gagné':4,'Perdu':5,'Froid':6};
+  return o[s] ?? 99;
+}
+
+function sortBy(field) { currentFilters.sort = field; applyFilters(); }
+
+// ===================== TABLE =====================
+function renderTable(data) {
+  const tbody = document.getElementById('tableBody');
+  const empty = document.getElementById('emptyState');
+  if (data.length === 0) { tbody.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  tbody.innerHTML = data.map(p => `
+    <tr class="data-row" onclick="openDetail(${p.id})">
+      <td class="company-name">${p.company}</td>
+      <td>${p.ville}</td>
+      <td><span class="secteur-tag">${p.secteur}</span></td>
+      <td>${statusBadge(p.status)}</td>
+      <td>${priorityDot(p.priority)}</td>
+      <td><span class="tag-icpe tag-icpe-${p.icpe === 'A' ? 'a' : p.icpe === 'E' ? 'e' : 'd'}">${p.icpe}</span></td>
+      <td style="color:var(--text3)">${p.contact || '<span style="color:var(--border)">—</span>'}</td>
+      <td style="color:var(--accent2);font-weight:500">${p.ca ? p.ca + ' k€' : '—'}</td>
+      <td style="color:var(--text3);font-size:11px;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.nextAction || '—'}</td>
+      <td><span style="font-size:11px;color:var(--text3)">${p.notes.length > 0 ? '💬 ' + p.notes.length : ''}</span></td>
+    </tr>
+  `).join('');
+}
+
+function statusBadge(s) {
+  const map = {
+    'Nouveau':'badge-nouveau','Contacté':'badge-contact','RDV planifié':'badge-rdv',
+    'Devis envoyé':'badge-devis','Gagné':'badge-gagne','Perdu':'badge-perdu','Froid':'badge-froid'
+  };
+  const dots = {
+    'Nouveau':'var(--novo)','Contacté':'var(--contact)','RDV planifié':'var(--rdv)',
+    'Devis envoyé':'var(--devis)','Gagné':'var(--gagne)','Perdu':'var(--danger)','Froid':'var(--froid)'
+  };
+  return `<span class="badge ${map[s]}"><span class="status-dot" style="background:${dots[s]}"></span>${s}</span>`;
+}
+
+function priorityDot(p) {
+  const c = p === 'P1' ? 'var(--danger)' : p === 'P2' ? 'var(--warn)' : 'var(--accent3)';
+  return `<div class="priority p${p.slice(1)}"><div class="priority-dot" style="background:${c}"></div><span style="color:${c};font-size:11px">${p}</span></div>`;
+}
+
+// ===================== KANBAN =====================
+function renderKanban(data) {
+  const stages = ['Nouveau','Contacté','RDV planifié','Devis envoyé','Gagné','Perdu','Froid'];
+  const colors = {
+    'Nouveau':'var(--novo)','Contacté':'var(--contact)','RDV planifié':'var(--rdv)',
+    'Devis envoyé':'var(--devis)','Gagné':'var(--gagne)','Perdu':'var(--danger)','Froid':'var(--froid)'
+  };
+  document.getElementById('kanbanView').innerHTML = stages.map(s => {
+    const cards = data.filter(p => p.status === s);
+    return `
+      <div class="kanban-col">
+        <div class="kanban-header">
+          <span class="col-title" style="color:${colors[s]}">${s}</span>
+          <span class="col-count">${cards.length}</span>
+        </div>
+        <div class="kanban-cards">
+          ${cards.map(p => `
+            <div class="kanban-card" onclick="openDetail(${p.id})">
+              <div class="kc-company">${p.company}</div>
+              <div class="kc-meta">
+                <span>${p.ville}</span>
+                <span style="color:var(--text3)">·</span>
+                <span class="secteur-tag" style="font-size:9px;padding:1px 5px">${p.secteur}</span>
+                <span style="color:var(--accent2)">${p.ca ? p.ca + 'k€' : ''}</span>
+              </div>
+              ${p.nextAction ? `<div class="kc-action">→ ${p.nextAction}</div>` : ''}
+            </div>
+          `).join('')}
+          ${cards.length === 0 ? '<div style="text-align:center;color:var(--border);font-size:11px;padding:20px">Aucun prospect</div>' : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ===================== MODAL DETAIL =====================
+function openDetail(id) {
+  const p = prospects.find(x => x.id === id);
+  if (!p) return;
+  editingId = id;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-title">${p.company}</div>
+    <div class="modal-subtitle">${p.secteur} — ${p.ville} — ICPE ${p.icpe}</div>
+    <div style="display:flex;gap:10px;margin-bottom:20px;align-items:center">
+      ${statusBadge(p.status)}
+      ${priorityDot(p.priority)}
+      <span style="margin-left:auto;color:var(--accent2);font-family:'Syne',sans-serif;font-weight:700;font-size:18px">${p.ca ? p.ca + ' k€' : '—'}</span>
+    </div>
+
+    <div class="modal-grid">
+      <div class="field-group"><div class="field-label">Statut</div>
+        <select class="modal-select" id="eStatus" onchange="quickUpdate(${id},'status',this.value)">
+          ${['Nouveau','Contacté','RDV planifié','Devis envoyé','Gagné','Perdu','Froid'].map(s => `<option${p.status===s?' selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field-group"><div class="field-label">Priorité</div>
+        <select class="modal-select" id="ePriority" onchange="quickUpdate(${id},'priority',this.value)">
+          ${['P1','P2','P3'].map(s => `<option${p.priority===s?' selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field-group"><div class="field-label">Contact</div><input type="text" id="eContact" value="${p.contact}" onblur="quickUpdate(${id},'contact',this.value)"></div>
+      <div class="field-group"><div class="field-label">Fonction</div><input type="text" id="eFonction" value="${p.fonction}" onblur="quickUpdate(${id},'fonction',this.value)"></div>
+      <div class="field-group"><div class="field-label">Email</div><input type="email" id="eEmail" value="${p.email}" onblur="quickUpdate(${id},'email',this.value)"></div>
+      <div class="field-group"><div class="field-label">Téléphone</div><input type="text" id="eTel" value="${p.tel}" onblur="quickUpdate(${id},'tel',this.value)"></div>
+      <div class="field-group"><div class="field-label">Besoin principal</div>
+        <select class="modal-select" id="eBesoin" onchange="quickUpdate(${id},'besoin',this.value)">
+          ${['Audit conformité ICPE','Réexamen IED','DAE complet','EDD Seveso','ATEX','GEREP/BEGES/OPERAT','AMO récurrente'].map(s => `<option${p.besoin===s?' selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field-group"><div class="field-label">CA estimé (k€)</div><input type="text" id="eCa" value="${p.ca}" onblur="quickUpdate(${id},'ca',parseFloat(this.value)||0)"></div>
+      <div class="field-group full"><div class="field-label">Prochaine action</div><input type="text" id="eNextAction" value="${p.nextAction}" onblur="quickUpdate(${id},'nextAction',this.value)"></div>
+    </div>
+
+    <div class="notes-section">
+      <div class="sidebar-label" style="margin-bottom:10px">📋 Journal d'activité (${p.notes.length} notes)</div>
+      <div class="notes-list">
+        ${p.notes.length === 0 ? '<div style="color:var(--text3);font-size:12px;padding:10px 0">Aucune note pour l\'instant</div>' : ''}
+        ${p.notes.map(n => `
+          <div class="note-item">
+            <div class="note-meta">${n.date}</div>
+            <div class="note-text">${n.text}</div>
+          </div>
+        `).reverse().join('')}
+      </div>
+      <div class="add-note-row">
+        <textarea id="newNoteText" placeholder="Ajouter une note d'activité..."></textarea>
+        <button class="btn btn-primary btn-sm" onclick="addNote(${id})" style="flex-shrink:0">+ Ajouter</button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:18px;border-top:1px solid var(--border);padding-top:16px">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal()">Fermer</button>
+      <button class="btn btn-ghost btn-sm" style="color:var(--danger);margin-left:auto" onclick="deleteProspect(${id})">🗑 Supprimer</button>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function quickUpdate(id, field, value) {
+  const p = prospects.find(x => x.id === id);
+  if (!p) return;
+  p[field] = value;
+  updateCounters();
+  updateHeaderStats();
+  updatePipelineMini();
+  applyFilters();
+}
+
+function addNote(id) {
+  const p = prospects.find(x => x.id === id);
+  if (!p) return;
+  const text = document.getElementById('newNoteText').value.trim();
+  if (!text) return;
+  const today = new Date().toISOString().slice(0,10);
+  p.notes.push({date: today, text});
+  p.lastContact = today;
+  openDetail(id);
+}
+
+function deleteProspect(id) {
+  if (!confirm('Supprimer ce prospect ?')) return;
+  prospects = prospects.filter(x => x.id !== id);
+  closeModal();
+  updateCounters(); updateHeaderStats(); updatePipelineMini(); applyFilters();
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  editingId = null;
+}
+
+// ===================== ADD MODAL =====================
+function openAddModal() { document.getElementById('addModalOverlay').classList.add('open'); }
+function closeAddModal() { document.getElementById('addModalOverlay').classList.remove('open'); }
+
+function saveNewProspect() {
+  const company = document.getElementById('nCompany').value.trim();
+  const ville = document.getElementById('nVille').value.trim();
+  if (!company || !ville) { alert('Entreprise et ville requis'); return; }
+  const newId = Math.max(...prospects.map(p => p.id)) + 1;
+  const note = document.getElementById('nNote').value.trim();
+  prospects.push({
+    id: newId,
+    company,
+    ville,
+    secteur: document.getElementById('nSecteur').value,
+    icpe: document.getElementById('nIcpe').value,
+    contact: document.getElementById('nContact').value,
+    fonction: document.getElementById('nFonction').value,
+    email: document.getElementById('nEmail').value,
+    tel: document.getElementById('nTel').value,
+    status: document.getElementById('nStatus').value,
+    priority: document.getElementById('nPriority').value,
+    ca: parseFloat(document.getElementById('nCa').value) || 0,
+    besoin: document.getElementById('nBesoin').value,
+    nextAction: document.getElementById('nNextAction').value,
+    notes: note ? [{date: new Date().toISOString().slice(0,10), text: note}] : [],
+    lastContact: note ? new Date().toISOString().slice(0,10) : ''
+  });
+  closeAddModal();
+  updateCounters(); updateHeaderStats(); updatePipelineMini(); applyFilters();
+}
+
+// ===================== VIEW =====================
+function setView(v) {
+  currentView = v;
+  document.getElementById('tableView').classList.toggle('hidden', v !== 'table');
+  document.getElementById('kanbanView').classList.toggle('hidden', v !== 'kanban');
+  document.getElementById('btnTable').classList.toggle('active', v === 'table');
+  document.getElementById('btnKanban').classList.toggle('active', v === 'kanban');
+  applyFilters();
+}
+
+// ===================== EXPORT =====================
+function exportCSV() {
+  const headers = ['ID','Entreprise','Ville','Filière','ICPE','Statut','Priorité','Contact','Fonction','Email','Tel','Besoin','CA estimé (k€)','Prochaine action','Notes count','Dernier contact'];
+  const rows = prospects.map(p => [
+    p.id, `"${p.company}"`, p.ville, p.secteur, p.icpe, p.status, p.priority,
+    `"${p.contact}"`, `"${p.fonction}"`, p.email, p.tel, p.besoin, p.ca,
+    `"${p.nextAction}"`, p.notes.length, p.lastContact
+  ].join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'prospects_icpe_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+// ===================== CLICK OUTSIDE =====================
+document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalOverlay')) closeModal(); });
+document.getElementById('addModalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('addModalOverlay')) closeAddModal(); });
+
+init();
+</script>
+</body>
+</html>
