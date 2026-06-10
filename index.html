@@ -361,6 +361,8 @@
       <div class="field-group"><div class="field-label">Besoin principal</div>
         <select class="modal-select" id="nBesoin"><option>Audit conformité ICPE</option><option>Réexamen IED</option><option>DAE complet</option><option>EDD Seveso</option><option>ATEX</option><option>GEREP/BEGES/OPERAT</option><option>AMO récurrente</option></select>
       </div>
+      <div class="field-group"><div class="field-label">SIREN</div><input type="text" id="nSiren" placeholder="123 456 789"></div>
+      <div class="field-group"><div class="field-label">SIRET</div><input type="text" id="nSiret" placeholder="123 456 789 00012"></div>
       <div class="field-group full"><div class="field-label">Prochaine action</div><input type="text" id="nNextAction" placeholder="Envoyer email de présentation..."></div>
       <div class="field-group full"><div class="field-label">Note initiale</div><textarea id="nNote" placeholder="Contexte, infos clés..."></textarea></div>
     </div>
@@ -623,6 +625,8 @@ function openDetail(id) {
           ${['Audit conformité ICPE','Réexamen IED','DAE complet','EDD Seveso','ATEX','GEREP/BEGES/OPERAT','AMO récurrente'].map(s=>`<option${p.besoin===s?' selected':''}>${s}</option>`).join('')}
         </select></div>
       <div class="field-group"><div class="field-label">CA estimé (k€)</div><input type="text" value="${p.ca||''}" onblur="saveProspect(${id},{ca:parseFloat(this.value)||0})"></div>
+      <div class="field-group"><div class="field-label">SIREN</div><input type="text" value="${p.siren||''}" placeholder="123 456 789" onblur="saveProspect(${id},{siren:this.value})"></div>
+      <div class="field-group"><div class="field-label">SIRET</div><input type="text" value="${p.siret||''}" placeholder="123 456 789 00012" onblur="saveProspect(${id},{siret:this.value})"></div>
       <div class="field-group full"><div class="field-label">Prochaine action</div><input type="text" value="${p.next_action||''}" onblur="saveProspect(${id},{next_action:this.value})"></div>
     </div>
     <div class="notes-section">
@@ -666,6 +670,8 @@ async function saveNewProspect() {
     priority: document.getElementById('nPriority').value,
     ca: parseFloat(document.getElementById('nCa').value) || 0,
     besoin: document.getElementById('nBesoin').value,
+    siren: document.getElementById('nSiren').value,
+    siret: document.getElementById('nSiret').value,
     next_action: document.getElementById('nNextAction').value,
     last_contact: note ? new Date().toISOString().slice(0,10) : ''
   });
